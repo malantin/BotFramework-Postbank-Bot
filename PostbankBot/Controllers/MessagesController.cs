@@ -28,7 +28,8 @@ namespace PostbankBot
 
                 //// return our reply to the user
                 //return message.CreateReplyMessage($"You sent {length} characters. That is awesome!");
-                return await Conversation.SendAsync(message, () => new EchoDialog());
+                //return await Conversation.SendAsync(message, () => new EchoDialog());
+                return await Conversation.SendAsync(message, () => new BankingDialog());
 
             }
             else

@@ -110,10 +110,18 @@
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\MessagesController.cs" />
+    <Compile Include="Controllers\TestController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\Creditcard.cs" />
     <Compile Include="Models\EchoDialog.cs" />
+    <Compile Include="Models\BankingDialog.cs" />
+    <Compile Include="Models\Links.cs" />
+    <Compile Include="Models\PostbankAccount.cs" />
+    <Compile Include="Models\PostbankClient.cs" />
+    <Compile Include="Models\PostbankId.cs" />
+    <Compile Include="Models\TokenHolder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
