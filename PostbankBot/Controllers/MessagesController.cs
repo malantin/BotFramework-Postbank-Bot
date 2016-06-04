@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 using Microsoft.Bot.Connector;
-using Microsoft.Bot.Connector.Utilities;
 using Newtonsoft.Json;
+using Microsoft.Bot.Builder.Dialogs;
+using PostbankBot.Models;
 
 namespace PostbankBot
 {
@@ -22,11 +23,13 @@ namespace PostbankBot
         {
             if (message.Type == "Message")
             {
-                // calculate something for us to return
-                int length = (message.Text ?? string.Empty).Length;
+                //// calculate something for us to return
+                //int length = (message.Text ?? string.Empty).Length;
 
-                // return our reply to the user
-                return message.CreateReplyMessage($"You sent {length} characters");
+                //// return our reply to the user
+                //return message.CreateReplyMessage($"You sent {length} characters. That is awesome!");
+                return await Conversation.SendAsync(message, () => new EchoDialog());
+
             }
             else
             {
@@ -46,6 +49,7 @@ namespace PostbankBot
             {
                 // Implement user deletion here
                 // If we handle user deletion, return a real message
+                return message.CreateReplyMessage("You have been deleted!");
             }
             else if (message.Type == "BotAddedToConversation")
             {
