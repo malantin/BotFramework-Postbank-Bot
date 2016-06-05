@@ -11,6 +11,6 @@ namespace PostbankBot.Models
         public string name { get; set; }
         public List<PostbankAccount> accounts { get; set; }
         public List<Creditcard> creditcards { get; set; }
-        public List<Link> links { get; set; }
+        public List<PostbankLink> links { get; set; }
     }
 }

@@ -9,7 +9,7 @@ using Microsoft.Bot.Connector;
 
 namespace PostbankBot.Models
 {
-    [LuisModel("b76c4455-7602-477b-a922-6520787eac41", "0e4fea57c762484fb2e92fcb2c144228")]
+    [LuisModel("b76c4455-7602-477b-a922-6520787eac41", "7d6e621b43a64d8c965bdb6396a448db")]
     [Serializable]
     public class BankingDialog : LuisDialog<object>
     {
@@ -77,6 +77,54 @@ namespace PostbankBot.Models
                         await context.PostAsync(item.iban);
                     }
                     await context.PostAsync("Which account do you want to use?");
+                }
+            }
+            catch (Exception ex)
+            {
+                await context.PostAsync($"I am sorry. :( There has been some problems in getting your account information. Please try again later. The error message is {ex.Message}.");
+            }
+            finally
+            {
+                context.Wait(MessageReceived);
+            }
+
+        }
+
+        [LuisIntent("ShowTransactions")]
+        public async Task ShowTransactions(IDialogContext context, LuisResult result)
+        {
+            PostbankClient client = new PostbankClient("Hackathon5", "test12345");
+
+            try
+            {
+                client = await client.GetAccountInformationAsnyc();
+                EntityRecommendation accountNumber = null;
+                EntityRecommendation amount = null;
+                result.TryFindEntity("AccountNumber", out accountNumber);
+                result.TryFindEntity("builtin.number", out amount);
+                if (accountNumber != null && amount != null)
+                {
+                    var account = client.IDInfo.accounts.Where(i => i.iban.ToLower() == accountNumber.Entity).First();
+                    var amountNumber = int.Parse(amount.Entity);
+                    var transactions = await client.GetTransactionForAccount(account);
+                    await context.PostAsync($"The balance for your {account.productDescription} account with IBAN {account.iban} is {account.amount} {account.currency}. These are the last {amount.Entity} transactions:");
+                    for (int i = 0; i < amountNumber; i++)
+                    {
+                        if (transactions.content[i] != null)
+                        {
+                            var currentTrans = transactions.content[i];
+                            await context.PostAsync($"{DateTime.FromFileTime(currentTrans.valutaDate)} {currentTrans.transactionType}: {currentTrans.amount} {currentTrans.currency} {String.Join("", currentTrans.purpose)}");
+                        }
+                    }
+                }
+                else
+                {
+                    await context.PostAsync($"For which account do you want to display your transaction? You have got {client.IDInfo.accounts.Count} account(s) with the following IBAN:");
+                    foreach (var item in client.IDInfo.accounts)
+                    {
+                        await context.PostAsync(item.iban);
+                    }
+                    await context.PostAsync("Which account do you want to use? Please state the IBAN and the number of transactions you want to see.");
                 }
             }
             catch (Exception ex)

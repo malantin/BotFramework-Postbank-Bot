@@ -5,7 +5,7 @@ using System.Web;
 
 namespace PostbankBot.Models
 {
-    public class Link
+    public class PostbankLink
     {
         public string rel { get; set; }
         public string href { get; set; }

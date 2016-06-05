@@ -5,11 +5,12 @@ using System.Web;
 
 namespace PostbankBot.Models
 {
-    public class TokenHolder
+    public class PostbankTransactions
     {
         public List<object> messages { get; set; }
-        public string token { get; set; }
-        public string userId { get; set; }
         public List<PostbankLink> links { get; set; }
+        public List<PostbankTransactionContent> content { get; set; }
+        public PostbankTransactionPage page { get; set; }
     }
+
 }

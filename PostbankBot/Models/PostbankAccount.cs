@@ -25,6 +25,6 @@ namespace PostbankBot.Models
         public object futureSales { get; set; }
         public object amountAvailable { get; set; }
         public object currentlyNotAvailableAmount { get; set; }
-        public List<Link> links { get; set; }
+        public List<PostbankLink> links { get; set; }
     }
 }

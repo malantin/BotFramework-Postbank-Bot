@@ -117,10 +117,14 @@
     <Compile Include="Models\Creditcard.cs" />
     <Compile Include="Models\EchoDialog.cs" />
     <Compile Include="Models\BankingDialog.cs" />
-    <Compile Include="Models\Links.cs" />
+    <Compile Include="Models\PostbankLink.cs" />
     <Compile Include="Models\PostbankAccount.cs" />
     <Compile Include="Models\PostbankClient.cs" />
     <Compile Include="Models\PostbankId.cs" />
+    <Compile Include="Models\PostbankReference.cs" />
+    <Compile Include="Models\PostbankTransactions.cs" />
+    <Compile Include="Models\PostbankTransactionContent.cs" />
+    <Compile Include="Models\PostbankTransactionPage.cs" />
     <Compile Include="Models\TokenHolder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -129,6 +133,7 @@
     <Content Include="Cert\PBS_TESTCLIENT_T2.cer">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="Properties\PublishProfiles\Azure Server.pubxml" />
     <None Include="Properties\PublishProfiles\postbankbot.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
