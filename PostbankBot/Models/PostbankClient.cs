@@ -1,6 +1,8 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -29,7 +31,8 @@ namespace PostbankBot.Models
         public async Task<PostbankClient> GetAccountInformationAsnyc()
         {
             WebRequestHandler handler = new WebRequestHandler();
-            X509Certificate2 certificate = X509Certificate.CreateFromCertFile
+            var path = HttpContext.Current.Server.MapPath("/Cert/PBS_TESTCLIENT_T2.cer");
+            X509Certificate certificate = X509Certificate.CreateFromCertFile(path);
             handler.ClientCertificates.Add(certificate);
 
             using (var client = new HttpClient(handler))
@@ -39,21 +42,29 @@ namespace PostbankBot.Models
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-                HttpResponseMessage response = await client.PostAsync($"token?username={Username}&password={password}", new StringContent("", Encoding.UTF8, "application/json"));
-                if (response.IsSuccessStatusCode)
+                try
                 {
-                    var json = await response.Content.ReadAsStringAsync();
-                    tokenHolder = (TokenHolder)JsonConvert.DeserializeObject(json, typeof(TokenHolder));
-
-                    client.DefaultRequestHeaders.Clear();
-                    client.DefaultRequestHeaders.Add("x-auth", tokenHolder.token);
-                    response = await client.PostAsync($"token?username={Username}&password={password}", new StringContent("", Encoding.UTF8, "application/json"));
-                    if(response.IsSuccessStatusCode)
+                    HttpResponseMessage response = await client.PostAsync($"token?username={Username}&password={password}", new StringContent("", Encoding.UTF8, "application/json"));
+                    if (response.IsSuccessStatusCode)
                     {
-                        json = await response.Content.ReadAsStringAsync();
-                        IDInfo = (PostbankId)JsonConvert.DeserializeObject(json, typeof(PostbankId));
+                        var json = await response.Content.ReadAsStringAsync();
+                        tokenHolder = (TokenHolder)JsonConvert.DeserializeObject(json, typeof(TokenHolder));
+
+                        client.DefaultRequestHeaders.Clear();
+                        client.DefaultRequestHeaders.Add("x-auth", tokenHolder.token);
+                        response = await client.GetAsync("");
+                        if (response.IsSuccessStatusCode)
+                        {
+                            json = await response.Content.ReadAsStringAsync();
+                            IDInfo = (PostbankId)JsonConvert.DeserializeObject(json, typeof(PostbankId));
+                        }
+                        return this;
                     }
-                    return this;
+                }
+                catch(Exception e)
+                {
+                    Debug.WriteLine(e.Message);
+                    throw;
                 }
             }
 

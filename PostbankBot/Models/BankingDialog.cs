@@ -44,7 +44,7 @@ namespace PostbankBot.Models
             var message = "... *sleeping*";
             if (result.Query.ToLower().Contains("hi") || result.Query.ToLower().Contains("hi ") || result.Query.ToLower().Contains("hi!"))
             {
-                message = "Hi! Welcome at Postbank? How may I assist you?";
+                message = "Hi! Welcome at Postbank! How may I assist you?";
             }
             else
             {
@@ -56,20 +56,38 @@ namespace PostbankBot.Models
         }
 
         [LuisIntent("ShowBalance")]
-        [LuisIntent("AccountDetails")]
         public async Task ShowBalance(IDialogContext context, LuisResult result)
         {
-            EntityRecommendation ent = null;
-            if(result.TryFindEntity("AccountNumber", out ent))
+            PostbankClient client = new PostbankClient("Hackathon5", "test12345");
+
+            try
             {
-                await context.PostAsync("Your balance for account " + ent.Entity + " is " + 1337 + "€.");
+                client = await client.GetAccountInformationAsnyc();
+                EntityRecommendation ent = null;
+                if (result.TryFindEntity("AccountNumber", out ent))
+                {
+                    var account = client.IDInfo.accounts.Where(i => i.iban.ToLower() == ent.Entity).First();
+                    await context.PostAsync($"The balance for your {account.productDescription} account with IBAN {account.iban} is {account.amount} {account.currency}.");
+                }
+                else
+                {
+                    await context.PostAsync($"For what account do you want to display your balance? You have got {client.IDInfo.accounts.Count} account(s) with the following IBAN:");
+                    foreach (var item in client.IDInfo.accounts)
+                    {
+                        await context.PostAsync(item.iban);
+                    }
+                    await context.PostAsync("Which account do you want to use?");
+                }
             }
-            else
+            catch (Exception ex)
             {
-                await context.PostAsync("For what account do you want to display you balance?");
+                await context.PostAsync($"I am sorry. :( There has been some problems in getting your account information. Please try again later. The error message is {ex.Message}.");
+            }
+            finally
+            {
+                context.Wait(MessageReceived);
             }
 
-            context.Wait(MessageReceived);
         }
 
         public BankingDialog(ILuisService service = null) : base(service)

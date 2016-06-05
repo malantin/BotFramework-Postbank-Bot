@@ -14,14 +14,14 @@ namespace PostbankBot.Controllers
         PostbankClient client;
 
         // GET: api/Test
-        public async Task<PostbankClient> Get()
+        public async Task<PostbankAccount> Get()
         {
             //return new string[] { "value1", "value2" };
             client = new PostbankClient("Hackathon5", "test12345");
             client = await client.GetAccountInformationAsnyc();
             if (client != null)
             {
-                return client;
+                return client.IDInfo.accounts[0];
             }
             else
             {
