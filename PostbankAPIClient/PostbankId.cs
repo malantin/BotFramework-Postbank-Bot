@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace PostbankBot.Models
+namespace Postbank
 {
-    public class PostbankTransactions
+    public class PostbankId
     {
         public List<object> messages { get; set; }
+        public string name { get; set; }
+        public List<PostbankAccount> accounts { get; set; }
+        public List<Creditcard> creditcards { get; set; }
         public List<PostbankLink> links { get; set; }
-        public List<PostbankTransactionContent> content { get; set; }
-        public PostbankTransactionPage page { get; set; }
     }
-
 }

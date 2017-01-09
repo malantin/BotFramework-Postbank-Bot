@@ -11,7 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 
-namespace PostbankBot.Models
+namespace Postbank
 {
     public class PostbankClient
     {
@@ -30,17 +30,16 @@ namespace PostbankBot.Models
 
         public async Task<PostbankTransactions> GetTransactionForAccount(PostbankAccount account)
         {
-            WebRequestHandler handler = new WebRequestHandler();
-            var path = HttpContext.Current.Server.MapPath("/Cert/PBS_TESTCLIENT_T2.cer");
-            X509Certificate certificate = X509Certificate.CreateFromCertFile(path);
-            handler.ClientCertificates.Add(certificate);
+            //WebRequestHandler handler = new WebRequestHandler();
+            //var path = HttpContext.Current.Server.MapPath("/Cert/PBS_TESTCLIENT_T2.cer");
+            //X509Certificate certificate = X509Certificate.CreateFromCertFile(path);
+            //handler.ClientCertificates.Add(certificate);
 
-            using (var client = new HttpClient(handler))
+            using (HttpClient client = NewClient(sha1Thumbprint: "1ccf10b487ba0bd9f7adbf674441a85ecd1d4a53"))
             {
-                //client.BaseAddress = new Uri($"https://vision.googleapis.com/v1/images:annotate?key={_APIKey}");
-                client.BaseAddress = new Uri($"https://hackathon.postbank.de:443/bank-api/blau/postbankid/");
-                client.DefaultRequestHeaders.Accept.Clear();
-                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                //client.BaseAddress = new Uri($"https://hackathon.postbank.de:443/bank-api/blau/postbankid/");
+                //client.DefaultRequestHeaders.Accept.Clear();
+                //client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
                 try
                 {
@@ -69,19 +68,47 @@ namespace PostbankBot.Models
             }
         }
 
+        public static HttpClient NewClient(string sha1Thumbprint)
+        {
+            var handler = new WebRequestHandler();
+            X509Certificate2 cert;
+
+            using (var store = new X509Store(storeName: StoreName.My, storeLocation: StoreLocation.LocalMachine))
+            { 
+
+                store.Open(OpenFlags.ReadOnly | OpenFlags.OpenExistingOnly);
+                var certs = store.Certificates.Find(
+                    findType: X509FindType.FindByThumbprint,
+                    findValue: sha1Thumbprint,
+                    validOnly: false);
+                if (certs.Count == 0) { throw new NotSupportedException($"Could not find cert {sha1Thumbprint}"); }
+                if (certs.Count > 1) { throw new NotSupportedException($"cert {sha1Thumbprint} was not unique?!?"); }
+
+                cert = certs[0];            }
+
+            handler.ClientCertificates.Add(cert);
+
+            var client = new HttpClient(handler)
+            {
+                BaseAddress = new Uri($"")
+            };
+            client.DefaultRequestHeaders.Accept.Clear();
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            return client;
+        }
+
         public async Task<PostbankClient> GetAccountInformationAsnyc()
         {
-            WebRequestHandler handler = new WebRequestHandler();
-            var path = HttpContext.Current.Server.MapPath("/Cert/PBS_TESTCLIENT_T2.cer");
-            X509Certificate certificate = X509Certificate.CreateFromCertFile(path);
-            handler.ClientCertificates.Add(certificate);
+            //WebRequestHandler handler = new WebRequestHandler();
+            //var path = HttpContext.Current.Server.MapPath("/Cert/PBS_TESTCLIENT_T2.cer");
+            //X509Certificate certificate = X509Certificate.CreateFromCertFile(path);
+            //handler.ClientCertificates.Add(certificate);
 
-            using (var client = new HttpClient(handler))
+            using (HttpClient client = NewClient(sha1Thumbprint: "1ccf10b487ba0bd9f7adbf674441a85ecd1d4a53"))
             {
-                //client.BaseAddress = new Uri($"https://vision.googleapis.com/v1/images:annotate?key={_APIKey}");
-                client.BaseAddress = new Uri($"https://hackathon.postbank.de:443/bank-api/blau/postbankid/");
-                client.DefaultRequestHeaders.Accept.Clear();
-                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                //client.BaseAddress = new Uri($"https://hackathon.postbank.de:443/bank-api/blau/postbankid/");
+                //client.DefaultRequestHeaders.Accept.Clear();
+                //client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
                 try
                 {

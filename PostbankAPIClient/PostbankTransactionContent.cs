@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace PostbankBot.Models
+namespace Postbank
 {
     public class PostbankTransactionContent
     {

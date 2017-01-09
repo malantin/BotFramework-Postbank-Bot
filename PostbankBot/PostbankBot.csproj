@@ -114,25 +114,12 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\Creditcard.cs" />
     <Compile Include="Models\EchoDialog.cs" />
     <Compile Include="Models\BankingDialog.cs" />
-    <Compile Include="Models\PostbankLink.cs" />
-    <Compile Include="Models\PostbankAccount.cs" />
-    <Compile Include="Models\PostbankClient.cs" />
-    <Compile Include="Models\PostbankId.cs" />
-    <Compile Include="Models\PostbankReference.cs" />
-    <Compile Include="Models\PostbankTransactions.cs" />
-    <Compile Include="Models\PostbankTransactionContent.cs" />
-    <Compile Include="Models\PostbankTransactionPage.cs" />
-    <Compile Include="Models\TokenHolder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
-    <Content Include="Cert\PBS_TESTCLIENT_T2.cer">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <None Include="Properties\PublishProfiles\Azure Server.pubxml" />
     <None Include="Properties\PublishProfiles\postbankbot.pubxml" />
     <None Include="Web.Debug.config">
@@ -142,7 +129,12 @@
       <DependentUpon>Web.config</DependentUpon>
     </None>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\PostbankAPIClient\PostbankAPIClient.csproj">
+      <Project>{146e05ab-2ec4-4dd7-8b1a-8ce917bb2b66}</Project>
+      <Name>PostbankAPIClient</Name>
+    </ProjectReference>
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

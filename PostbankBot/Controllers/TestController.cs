@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Web.Http;
 using PostbankBot.Models;
 using System.Threading.Tasks;
+using Postbank;
 
 namespace PostbankBot.Controllers
 {
@@ -30,9 +31,19 @@ namespace PostbankBot.Controllers
         }
 
         // GET: api/Test/5
-        public string Get(int id)
+        public async Task<string> Get(int id)
         {
-            return "value";
+            try
+            {
+                client = new PostbankClient("Hackathon5", "test12345");
+                client = await client.GetAccountInformationAsnyc();
+                return client.Username;
+            }
+            catch(Exception e)
+            {
+                throw;
+                return e.Message;
+            }
         }
 
         // POST: api/Test
